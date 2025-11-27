@@ -1,3 +1,4 @@
+
 async function loadRackConfig() {
     const res = await fetch("rack-config.json");
     if (!res.ok) {

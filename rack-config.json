@@ -11,7 +11,7 @@
       "ram": "62 GiB",
       "storage": "2.7 TB HDD (sda), 447 GB SSD (sdb), 447 GB SSD (sdc), 476 GB SSD (sdd), 1.8 TB NVMe (nvme0n1)",
       "nic": "1 x 2.5 Gbps (enp4s0)",
-      "services": [],
+      "services": ["Wings", "Minecraft Server"],
       "notes": "Hostname: earthpol"
     },
     {
@@ -23,7 +23,7 @@
       "ram": "70 GiB",
       "storage": "10.5 TB virtual disk on MR9260-8i RAID controller (sda)",
       "nic": "1 x 1 Gbps",
-      "services": [],
+      "services": ["Backups", "Website: portal.earthmc.org", "Discord Bots"],
       "notes": "Hostname: filefortress"
     },
     {
@@ -35,8 +35,20 @@
       "ram": "54 GiB",
       "storage": "2 x 232.9G SSD (WDC WDBNCE2500PN)",
       "nic": "1 x 10 Gbps",
-      "services": [],
+      "services": ["Wings", "Minecraft Velocity Proxy", "Minecraft Server"],
       "notes": "Hostname: proxyfortress"
-    }
+    },
+    {
+      "id": "ucg-fiber",
+      "name": "UniFi Cloud Gateway Ultra (Fiber)",
+      "startU": 16,
+      "heightU": 1,
+      "cpu": "Quad-Core ARM Cortex-A53",
+      "ram": "4 GB",
+      "storage": "16 GB eMMC",
+      "nic": "2 x 10G SFP+, 1 x 10G WAN/LAN, 4 x 2.5G LAN",
+      "services": ["Routing", "Firewall", "VPN", "UniFi Network Controller"],
+      "notes": "Internet Speed: 5Gbps UP | 5Gbps DOWN | Throughput 10Gbps"
+   }
   ]
 }
