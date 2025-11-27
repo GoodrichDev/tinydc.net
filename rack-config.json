@@ -1,0 +1,42 @@
+{
+  "rackName": "tinydc.net",
+  "totalUnits": 16,
+  "devices": [
+    {
+      "id": "earthpol",
+      "name": "AMD Ryzen 9 5900XT Node",
+      "startU": 1,
+      "heightU": 8,
+      "cpu": "AMD Ryzen 9 5900XT (16 cores, 32 threads, 1 socket)",
+      "ram": "62 GiB",
+      "storage": "2.7 TB HDD (sda), 447 GB SSD (sdb), 447 GB SSD (sdc), 476 GB SSD (sdd), 1.8 TB NVMe (nvme0n1)",
+      "nic": "1 x 2.5 Gbps (enp4s0)",
+      "services": [],
+      "notes": "Hostname: earthpol"
+    },
+    {
+      "id": "filefortress",
+      "name": "Dell PowerEdge C2100",
+      "startU": 10,
+      "heightU": 2,
+      "cpu": "2 x Intel Xeon X5570 @ 2.93GHz (4 cores per socket, 8 cores, 16 threads total)",
+      "ram": "70 GiB",
+      "storage": "10.5 TB virtual disk on MR9260-8i RAID controller (sda)",
+      "nic": "1 x 1 Gbps",
+      "services": [],
+      "notes": "Hostname: filefortress"
+    },
+    {
+      "id": "proxyfortress",
+      "name": "IBM System x3650 M4",
+      "heightU": 2,
+      "startU": 12,
+      "cpu": "2 x Intel Xeon E5-2650 @ 2.00GHz (8 cores per socket, 16 cores, 32 threads total)",
+      "ram": "54 GiB",
+      "storage": "2 x 232.9G SSD (WDC WDBNCE2500PN)",
+      "nic": "1 x 10 Gbps",
+      "services": [],
+      "notes": "Hostname: proxyfortress"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Rack Visualizer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+    <header class="app-header">
+        <h1 id="rack-title">Server Rack</h1>
+        <p class="subtitle">Click a device to view details</p>
+    </header>
+
+    <main class="layout">
+        <section class="rack-wrapper">
+            <div class="rack-frame">
+                <div class="rack-top-label">Top</div>
+                <div id="rack" class="rack"></div>
+                <div class="rack-bottom-label">Bottom</div>
+            </div>
+        </section>
+
+        <aside class="details-panel">
+            <h2>Hardware Information</h2>
+            <div id="details-empty">
+                <p>Select a device in the rack to view details.</p>
+            </div>
+            <div id="details" class="details hidden">
+                <h3 id="detail-name"></h3>
+                <p class="detail-line">
+                    <span class="label">Rack Units:</span>
+                    <span id="detail-units"></span>
+                </p>
+                <p class="detail-line">
+                    <span class="label">Position:</span>
+                    <span id="detail-position"></span>
+                </p>
+                <p class="detail-line">
+                    <span class="label">Online:</span>
+                    <span id="detail-online" class="status-pill status-unknown">
+              Planned - not wired yet
+            </span>
+                </p>
+
+                <p class="detail-line specs-heading">
+                    <span class="label">Specs:</span>
+                </p>
+                <div class="specs-grid">
+                    <p class="detail-line">
+                        <span class="label">CPU:</span>
+                        <span id="detail-cpu"></span>
+                    </p>
+                    <p class="detail-line">
+                        <span class="label">RAM:</span>
+                        <span id="detail-ram"></span>
+                    </p>
+                    <p class="detail-line">
+                        <span class="label">Storage:</span>
+                        <span id="detail-storage"></span>
+                    </p>
+                    <p class="detail-line">
+                        <span class="label">NIC:</span>
+                        <span id="detail-nic"></span>
+                    </p>
+                </div>
+
+                <p class="detail-line">
+                    <span class="label">Services:</span>
+                </p>
+                <ul id="detail-services" class="services-list"></ul>
+
+                <p class="detail-line">
+                    <span class="label">Notes:</span>
+                </p>
+                <p id="detail-notes"></p>
+
+                <div class="future-note">
+                    Online states and service health checks will be wired in later.
+                </div>
+            </div>
+        </aside>
+    </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
