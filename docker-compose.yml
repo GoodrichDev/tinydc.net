@@ -1,0 +1,18 @@
+services:
+
+  httpd:
+    hostname: httpd
+    container_name:  tinydc.net
+    image: busybox:latest
+    working_dir: /home/static
+    command: ["busybox", "httpd", "-f", "-v", "-p", "80"]
+    ports:
+      - 8080:80
+    volumes:
+      - .:/home/static:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--spider", "--tries=1", "http://localhost:80"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+      start_period: 2s
