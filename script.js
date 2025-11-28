@@ -37,12 +37,10 @@ function buildRack(config) {
             return;
         }
 
-        // Assign device into slots
         for (let i = 0; i < height; i++) {
             slots[bottomIndex + i] = device;
         }
 
-        // Set helper fields
         device._bottomUnit = startU;
         device._topUnit = startU + height - 1;
         device._height = height;
@@ -52,7 +50,6 @@ function buildRack(config) {
     let lastDeviceId = null;
     let lastElement = null;
 
-    // Build DOM from top to bottom
     for (let u = totalUnits; u >= 1; u--) {
         const slotIndex = u - 1;
         const device = slots[slotIndex];
@@ -70,10 +67,7 @@ function buildRack(config) {
             btn.classList.add("occupied");
 
             if (device.id !== lastDeviceId) {
-                // New device starting at this U
                 btn.classList.add("device-start");
-
-                // Previous device ended at the last element
                 if (lastElement && lastDeviceId) {
                     lastElement.classList.add("device-end");
                 }
@@ -95,7 +89,6 @@ function buildRack(config) {
         } else {
             btn.classList.add("empty");
 
-            // If we step into an empty slot, the previous occupied device ends above
             if (lastElement && lastDeviceId) {
                 lastElement.classList.add("device-end");
             }
@@ -107,7 +100,6 @@ function buildRack(config) {
         lastElement = btn;
     }
 
-    // Ensure the very last device at the bottom gets an end marker
     if (lastElement && lastDeviceId) {
         lastElement.classList.add("device-end");
     }
@@ -129,7 +121,6 @@ function showDetails(device) {
     statusSpan.textContent = "Planned - not wired yet";
     statusSpan.className = "status-pill status-unknown";
 
-    // Specs
     const cpuEl = document.getElementById("detail-cpu");
     const ramEl = document.getElementById("detail-ram");
     const storageEl = document.getElementById("detail-storage");

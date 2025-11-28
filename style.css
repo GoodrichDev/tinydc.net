@@ -136,7 +136,7 @@ body {
 }
 
 .rack-unit.occupied.continued {
-    border-top-color: rgba(15, 23, 42, 0.9); /* faint internal line */
+    border-top-color: rgba(15, 23, 42, 0.9);
 }
 
 .rack-unit.occupied.device-start {
