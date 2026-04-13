@@ -3,10 +3,22 @@
   "totalUnits": 16,
   "devices": [
     {
+      "id": "pve2",
+      "name": "Dell PowerEdge C2100",
+      "startU": 1,
+      "heightU": 2,
+      "cpu": "2 x Intel Xeon X5570 @ 2.93GHz (4 cores per socket, 8 cores, 16 threads total)",
+      "ram": "70 GiB",
+      "storage": "10.5 TB virtual disk on MR9260-8i RAID controller (sda)",
+      "nic": "1 x 10 Gbps, 2 x 1 Gbps",
+      "services": ["Proxmox Cluster Node", "GitHub Runner VM", "Docker VM"],
+      "notes": "Hostname: pve2"
+    },
+    {
       "id": "earthpol",
       "name": "AMD Ryzen 9 5900XT Node",
-      "startU": 1,
-      "heightU": 8,
+      "startU": 3,
+      "heightU": 4,
       "cpu": "AMD Ryzen 9 5900XT (16 cores, 32 threads, 1 socket)",
       "ram": "62 GiB",
       "storage": "2.7 TB HDD (sda), 447 GB SSD (sdb), 447 GB SSD (sdc), 476 GB SSD (sdd), 1.8 TB NVMe (nvme0n1)",
@@ -15,33 +27,57 @@
       "notes": "Hostname: earthpol"
     },
     {
-      "id": "filefortress",
-      "name": "Dell PowerEdge C2100",
-      "startU": 10,
-      "heightU": 2,
-      "cpu": "2 x Intel Xeon X5570 @ 2.93GHz (4 cores per socket, 8 cores, 16 threads total)",
-      "ram": "70 GiB",
-      "storage": "10.5 TB virtual disk on MR9260-8i RAID controller (sda)",
-      "nic": "1 x 1 Gbps",
-      "services": ["Backups", "Website: portal.earthmc.org", "Discord Bots"],
-      "notes": "Hostname: filefortress"
+      "id": "ryzen5900x",
+      "name": "AMD Ryzen 9 5900X Node",
+      "startU": 7,
+      "heightU": 4,
+      "cpu": "AMD Ryzen 9 5900X (12 cores, 24 threads, 1 socket)",
+      "ram": "64 GiB DDR4",
+      "storage": "2 x 500 GB SSD, 1 TB NVMe, 1 TB SSD",
+      "nic": "1 x 2.5 Gbps, 1 x 10 Gbps",
+      "services": ["Proxmox / Compute Node"],
+      "notes": "General compute / expansion node"
     },
     {
-      "id": "proxyfortress",
-      "name": "IBM System x3650 M4",
-      "heightU": 2,
+      "id": "apc-ups",
+      "name": "APC Power Filter + Battery Backup",
+      "startU": 11,
+      "heightU": 1,
+      "cpu": "N/A",
+      "ram": "N/A",
+      "storage": "N/A",
+      "nic": "N/A",
+      "services": ["Power Conditioning", "Battery Backup"],
+      "notes": "2000W UPS"
+    },
+    {
+      "id": "usw-pro-max-48",
+      "name": "UniFi USW Pro Max 48",
       "startU": 12,
-      "cpu": "2 x Intel Xeon E5-2650 @ 2.00GHz (8 cores per socket, 16 cores, 32 threads total)",
-      "ram": "54 GiB",
-      "storage": "2 x 232.9G SSD (WDC WDBNCE2500PN)",
-      "nic": "1 x 10 Gbps",
-      "services": ["Wings", "Minecraft Velocity Proxy", "Minecraft Server"],
-      "notes": "Hostname: proxyfortress"
+      "heightU": 1,
+      "cpu": "Managed Switch ASIC",
+      "ram": "N/A",
+      "storage": "N/A",
+      "nic": "48 x Ethernet Ports + Uplinks",
+      "services": ["Switching", "VLANs"],
+      "notes": "Core switch"
+    },
+    {
+      "id": "patch-panel",
+      "name": "Patch Panel",
+      "startU": 13,
+      "heightU": 1,
+      "cpu": "N/A",
+      "ram": "N/A",
+      "storage": "N/A",
+      "nic": "Physical patch connections",
+      "services": ["Cable Management"],
+      "notes": "Structured cabling"
     },
     {
       "id": "ucg-fiber",
       "name": "UniFi Cloud Gateway Ultra (Fiber)",
-      "startU": 16,
+      "startU": 14,
       "heightU": 1,
       "cpu": "Quad-Core ARM Cortex-A53",
       "ram": "4 GB",
@@ -49,6 +85,18 @@
       "nic": "2 x 10G SFP+, 1 x 10G WAN/LAN, 4 x 2.5G LAN",
       "services": ["Routing", "Firewall", "VPN", "UniFi Network Controller"],
       "notes": "Internet Speed: 5Gbps UP | 5Gbps DOWN | Throughput 10Gbps"
-   }
+    },
+    {
+      "id": "backup-nas",
+      "name": "Backup NAS",
+      "startU": 15,
+      "heightU": 2,
+      "cpu": "N/A",
+      "ram": "N/A",
+      "storage": "32 TB raw (RAID10 usable ~16 TB) + 2 x 500 GB NVMe (RAID1)",
+      "nic": "2 x 2.5 Gbps",
+      "services": ["Backups", "Storage"],
+      "notes": "RAID10 array for redundancy and performance"
+    }
   ]
 }
