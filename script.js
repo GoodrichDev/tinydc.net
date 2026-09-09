@@ -37,162 +37,122 @@ function validateRackConfig(config) {
 }
 
 function buildRack(config) {
-    const rackEl = document.getElementById("rack");
-    const rackTitle = document.getElementById("rack-title");
+    const rack = document.getElementById("rack");
+    const devices = config.devices;
+    const occupied = devices.reduce((sum, device) => sum + device.heightU, 0);
 
-    rackTitle.textContent = config.rackName || "Server Rack";
-    document.getElementById("inventory-note").textContent = config.inventoryNote || "";
-    rackEl.innerHTML = "";
+    document.getElementById("rack-title").textContent = config.rackName || "Server rack";
+    document.getElementById("inventory-note").textContent = config.inventoryNote || "No inventory source provided.";
+    document.getElementById("device-count").textContent = devices.length;
+    document.getElementById("occupied-units").textContent = occupied;
+    document.getElementById("total-units").textContent = config.totalUnits;
+    document.getElementById("rack-capacity").textContent = `${config.totalUnits} U RACK`;
+    rack.replaceChildren();
+    rack.style.setProperty("--total-units", config.totalUnits);
 
-    const totalUnits = config.totalUnits || 42;
-    const devices = config.devices || [];
-
-    const slots = new Array(totalUnits).fill(null);
-
-    devices.forEach(device => {
-        const height = Number(device.heightU) || 1;
-        const startU = Number(device.startU);
-
-        if (!startU || startU < 1 || startU > totalUnits) {
-            console.warn(`Invalid startU for device ${device.name}`);
-            return;
+    const occupiedUnits = new Set();
+    for (const device of devices) {
+        for (let u = device.startU; u < device.startU + device.heightU; u++) occupiedUnits.add(u);
+    }
+    for (let u = config.totalUnits; u >= 1; u--) {
+        const row = config.totalUnits - u + 1;
+        const label = document.createElement("span");
+        label.className = "unit-label";
+        label.textContent = String(u).padStart(2, "0");
+        label.style.gridRow = String(row);
+        label.setAttribute("aria-hidden", "true");
+        rack.appendChild(label);
+        if (!occupiedUnits.has(u)) {
+            const empty = document.createElement("div");
+            empty.className = "rack-empty";
+            empty.style.gridRow = String(row);
+            empty.setAttribute("aria-label", `U${u}, empty`);
+            rack.appendChild(empty);
         }
-
-        const bottomIndex = startU - 1;
-        const topIndex = bottomIndex + height - 1;
-
-        if (topIndex >= totalUnits) {
-            console.warn(`Device ${device.name} exceeds rack height`);
-            return;
-        }
-
-        for (let i = 0; i < height; i++) {
-            slots[bottomIndex + i] = device;
-        }
-
-        device._bottomUnit = startU;
-        device._topUnit = startU + height - 1;
-        device._height = height;
-    });
-
-
-    let lastDeviceId = null;
-    let lastElement = null;
-
-    for (let u = totalUnits; u >= 1; u--) {
-        const slotIndex = u - 1;
-        const device = slots[slotIndex];
-        const btn = document.createElement(device ? "button" : "div");
-
-        btn.classList.add("rack-unit");
-        btn.dataset.unit = `U${u}`;
-
-        const unitLabel = document.createElement("span");
-        unitLabel.className = "unit-label";
-        unitLabel.textContent = `U${u}`;
-        btn.appendChild(unitLabel);
-
-        if (device) {
-            btn.type = "button";
-            btn.dataset.deviceId = device.id;
-            btn.setAttribute("aria-label", `${device.name}, U${u}`);
-            btn.setAttribute("aria-pressed", "false");
-            btn.classList.add("occupied");
-
-            if (device.id !== lastDeviceId) {
-                btn.classList.add("device-start");
-                if (lastElement && lastDeviceId) {
-                    lastElement.classList.add("device-end");
-                }
-
-                const deviceLabel = document.createElement("span");
-                deviceLabel.className = "device-label";
-                deviceLabel.textContent = device.name || "Device";
-                btn.appendChild(deviceLabel);
-            } else {
-                // Continuation of same device
-                btn.classList.add("continued");
-            }
-
-            btn.addEventListener("click", () => {
-                showDetails(device);
-            });
-
-            lastDeviceId = device.id;
-        } else {
-            btn.classList.add("empty");
-
-            if (lastElement && lastDeviceId) {
-                lastElement.classList.add("device-end");
-            }
-
-            lastDeviceId = null;
-        }
-
-        rackEl.appendChild(btn);
-        lastElement = btn;
     }
 
-    if (lastElement && lastDeviceId) {
-        lastElement.classList.add("device-end");
+    // DOM order follows the visual top-to-bottom rack order for keyboard navigation.
+    const orderedDevices = [...devices].sort((a, b) => b.startU - a.startU);
+    for (const device of orderedDevices) {
+        const topUnit = device.startU + device.heightU - 1;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "rack-device";
+        button.dataset.deviceId = device.id;
+        button.style.gridRow = `${config.totalUnits - topUnit + 1} / span ${device.heightU}`;
+        button.setAttribute("aria-label", `${device.name || "Device"}, ${formatPosition(device)}, ${device.heightU} ${device.heightU === 1 ? "rack unit" : "rack units"}`);
+        button.setAttribute("aria-pressed", "false");
+        button.setAttribute("aria-controls", "details");
+
+        const name = document.createElement("span");
+        name.className = "device-label";
+        name.textContent = device.name || "Device";
+        if (device.heightU > 1) {
+            const identifier = document.createElement("small");
+            identifier.textContent = device.id;
+            name.appendChild(identifier);
+        }
+        const height = document.createElement("span");
+        height.className = "device-height";
+        height.textContent = `${device.heightU}U`;
+        button.append(name, height);
+        button.addEventListener("click", () => {
+            showDetails(device);
+            if (window.matchMedia("(max-width: 760px)").matches) {
+                const panel = document.getElementById("device-panel");
+                panel.focus({ preventScroll: true });
+                panel.scrollIntoView({ block: "start", behavior: "instant" });
+            }
+        });
+        rack.appendChild(button);
+    }
+
+    if (orderedDevices.length) {
+        showDetails(orderedDevices[0]);
+    } else {
+        document.getElementById("details").hidden = true;
+        const empty = document.getElementById("details-empty");
+        empty.hidden = false;
+        empty.textContent = "No devices in this rack yet.";
     }
 }
 
+function formatPosition(device) {
+    const bottom = String(device.startU).padStart(2, "0");
+    const top = String(device.startU + device.heightU - 1).padStart(2, "0");
+    return device.heightU === 1 ? `U${bottom}` : `U${bottom}–U${top}`;
+}
+
 function showDetails(device) {
-    document.querySelectorAll(".rack-unit.occupied").forEach(button => {
+    document.querySelectorAll(".rack-device").forEach(button => {
         const selected = button.dataset.deviceId === device.id;
         button.classList.toggle("selected", selected);
         button.setAttribute("aria-pressed", String(selected));
     });
-    const detailsEmpty = document.getElementById("details-empty");
-    const details = document.getElementById("details");
-
-    detailsEmpty.style.display = "none";
-    details.classList.remove("hidden");
-
+    document.getElementById("details-empty").hidden = true;
+    document.getElementById("details").hidden = false;
+    document.getElementById("detail-id").textContent = device.id;
     document.getElementById("detail-name").textContent = device.name || "Device";
-    document.getElementById("detail-units").textContent = `${device._height || device.heightU || 1} U`;
-    document.getElementById("detail-position").textContent =
-        `Top U${device._topUnit}, Bottom U${device._bottomUnit}`;
+    document.getElementById("detail-units").textContent = `${device.heightU} ${device.heightU === 1 ? "rack unit" : "rack units"}`;
+    document.getElementById("detail-position").textContent = formatPosition(device);
+    document.getElementById("detail-online").textContent = "unavailable";
 
-    const statusSpan = document.getElementById("detail-online");
-    statusSpan.textContent = "Unavailable";
-    statusSpan.className = "status-pill status-unknown";
-
-    const cpuEl = document.getElementById("detail-cpu");
-    const ramEl = document.getElementById("detail-ram");
-    const storageEl = document.getElementById("detail-storage");
-    const nicEl = document.getElementById("detail-nic");
-
-    cpuEl.textContent = device.cpu || "Not set yet";
-    ramEl.textContent = device.ram || "Not set yet";
-    storageEl.textContent = device.storage || "Not set yet";
-    nicEl.textContent = device.nic || "Not set yet";
-
-
-    const servicesEl = document.getElementById("detail-services");
-    servicesEl.innerHTML = "";
-
-    if (Array.isArray(device.services) && device.services.length > 0) {
-        device.services.forEach(serviceName => {
-            const li = document.createElement("li");
-            li.textContent = serviceName;
-            servicesEl.appendChild(li);
-        });
-    } else {
-        const li = document.createElement("li");
-        li.textContent = "No services listed yet.";
-        servicesEl.appendChild(li);
+    for (const field of ["cpu", "ram", "storage", "nic"]) {
+        const value = device[field];
+        document.getElementById(`detail-${field}`).textContent = value === "N/A" ? "Not applicable" : value || "Not documented";
     }
-
-    const notesEl = document.getElementById("detail-notes");
-    notesEl.textContent = device.notes || "No notes added yet.";
+    const services = document.getElementById("detail-services");
+    services.replaceChildren();
+    const names = Array.isArray(device.services) && device.services.length ? device.services : ["No services listed."];
+    for (const name of names) {
+        const item = document.createElement("li");
+        item.textContent = name;
+        services.appendChild(item);
+    }
+    document.getElementById("detail-notes").textContent = device.notes || "No notes added.";
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
     const config = await loadRackConfig();
-    if (!config) {
-        return;
-    }
-    buildRack(config);
+    if (config) buildRack(config);
 });

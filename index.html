@@ -1,120 +1,108 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <!-- Primary Meta Tags -->
-<title>tinyDC — Mini Datacenter Rack Visualizer</title>
-<meta name="title" content="tinyDC — Mini Datacenter Rack Visualizer">
-<meta name="description" content="Explore tinyDC's documented rack layout, server hardware, storage, and services.">
-<link rel="canonical" href="https://tinydc.net/">
-
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://tinydc.net/">
-<meta property="og:title" content="tinyDC — Mini Datacenter Rack Visualizer">
-<meta property="og:description" content="Interactive rack visualizer showing server placement, CPU, RAM, storage, NIC, and hardware specs.">
-<meta property="og:image" content="https://i.imgur.com/NCRjta6.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://tinydc.net/">
-<meta property="twitter:title" content="tinyDC — Mini Datacenter Rack Visualizer">
-<meta property="twitter:description" content="Explore tinyDC's server rack, hardware insights, and system configuration.">
-<meta property="twitter:image" content="https://i.imgur.com/NCRjta6.png">
-
-<!-- Fallback for non-OG scrapers -->
-<link rel="image_src" href="https://i.imgur.com/NCRjta6.png">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>tinyDC — Rack inventory</title>
+    <meta name="description" content="Explore tinyDC's documented rack layout, server hardware, storage, and services.">
+    <link rel="canonical" href="https://tinydc.net/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tinydc.net/">
+    <meta property="og:title" content="tinyDC — Rack inventory">
+    <meta property="og:description" content="Interactive rack visualizer showing server placement, CPU, RAM, storage, NIC, and hardware specs.">
+    <meta property="og:image" content="https://i.imgur.com/NCRjta6.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://tinydc.net/">
+    <meta property="twitter:title" content="tinyDC — Rack inventory">
+    <meta property="twitter:description" content="Explore tinyDC's server rack, hardware insights, and system configuration.">
+    <meta property="twitter:image" content="https://i.imgur.com/NCRjta6.png">
+    <link rel="image_src" href="https://i.imgur.com/NCRjta6.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
-<div class="app">
-    <header class="app-header">
-        <h1 id="rack-title">Server Rack</h1>
-        <p class="subtitle">Click a device to view details</p>
-        <p id="inventory-note" class="subtitle"></p>
+    <a class="skip-link" href="#main">Skip to inventory</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="wordmark" href="/" aria-label="tinyDC home">
+                <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="1"/><rect x="3" y="14" width="18" height="7" rx="1"/><path d="M7 6.5h2m-2 11h2m4-11h4m-4 11h4"/></svg>
+                tiny<span>DC</span>
+            </a>
+            <span class="header-context">Infrastructure / Inventory</span>
+            <a class="source-link" href="https://github.com/GoodrichDev/tinydc.net" target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>
+        </div>
     </header>
 
-    <main class="layout">
-        <section class="rack-wrapper">
-            <div class="rack-frame">
-                <div class="rack-top-label">Top</div>
-                <div id="rack" class="rack"></div>
-                <div class="rack-bottom-label">Bottom</div>
+    <main id="main" class="app" tabindex="-1">
+        <section class="page-heading" aria-labelledby="page-title">
+            <div>
+                <p class="eyebrow">TINYDC / HARDWARE</p>
+                <h1 id="page-title">Rack inventory</h1>
+                <p class="page-description">Hardware, placement, and what runs on it.</p>
             </div>
+            <dl class="rack-summary" aria-label="Rack summary">
+                <div><dt>Devices</dt><dd id="device-count">—</dd></div>
+                <div><dt>Occupied</dt><dd><span id="occupied-units">—</span><span class="summary-suffix"> U</span></dd></div>
+                <div><dt>Capacity</dt><dd><span id="total-units">—</span><span class="summary-suffix"> U</span></dd></div>
+            </dl>
         </section>
 
-        <aside class="details-panel">
-            <h2>Hardware Information</h2>
-            <div id="details-empty" role="status">
-                <p>Select a device in the rack to view details.</p>
-            </div>
-            <div id="details" class="details hidden">
-                <h3 id="detail-name"></h3>
-                <p class="detail-line">
-                    <span class="label">Rack Units:</span>
-                    <span id="detail-units"></span>
-                </p>
-                <p class="detail-line">
-                    <span class="label">Position:</span>
-                    <span id="detail-position"></span>
-                </p>
-                <p class="detail-line">
-                    <span class="label">Monitoring:</span>
-                    <span id="detail-online" class="status-pill status-unknown">
-              Unavailable
-            </span>
-                </p>
-
-                <p class="detail-line specs-heading">
-                    <span class="label">Specs:</span>
-                </p>
-                <div class="specs-grid">
-                    <p class="detail-line">
-                        <span class="label">CPU:</span>
-                        <span id="detail-cpu"></span>
-                    </p>
-                    <p class="detail-line">
-                        <span class="label">RAM:</span>
-                        <span id="detail-ram"></span>
-                    </p>
-                    <p class="detail-line">
-                        <span class="label">Storage:</span>
-                        <span id="detail-storage"></span>
-                    </p>
-                    <p class="detail-line">
-                        <span class="label">NIC:</span>
-                        <span id="detail-nic"></span>
-                    </p>
+        <div class="workspace">
+            <section id="rack-section" class="rack-panel" aria-labelledby="rack-title">
+                <header class="panel-header">
+                    <h2 id="rack-title">Server rack</h2>
+                    <span class="panel-caption">Front elevation</span>
+                </header>
+                <div class="rack-stage">
+                    <div class="rack-orientation"><span>UNIT</span><span>TOP</span></div>
+                    <div id="rack" class="rack" aria-label="Rack devices"></div>
+                    <div class="rack-orientation rack-bottom"><span id="rack-capacity">— U RACK</span><span>BOTTOM</span></div>
                 </div>
+                <footer class="rack-legend"><span><i class="selection-key" aria-hidden="true"></i>Selected device</span><span>Select a device to inspect</span></footer>
+            </section>
 
-                <p class="detail-line">
-                    <span class="label">Services:</span>
-                </p>
-                <ul id="detail-services" class="services-list"></ul>
-
-                <p class="detail-line">
-                    <span class="label">Notes:</span>
-                </p>
-                <p id="detail-notes"></p>
-
-                <div class="future-note">
-                    This is a documented inventory. Live device and service health is unavailable.
+            <section id="device-panel" class="device-panel" aria-labelledby="device-panel-title" tabindex="-1">
+                <header class="panel-header detail-panel-header">
+                    <h2 id="device-panel-title">Device details</h2>
+                    <a class="back-to-rack" href="#rack-section">↑ Rack layout</a>
+                    <span class="panel-caption detail-caption">Hardware inventory</span>
+                </header>
+                <div id="details-empty" class="empty-state" role="status">Loading rack inventory…</div>
+                <div id="details" class="details" hidden>
+                    <div class="device-heading">
+                        <p id="detail-id" class="device-id"></p>
+                        <h3 id="detail-name"></h3>
+                        <div class="device-location"><span id="detail-position"></span><span class="location-divider" aria-hidden="true">/</span><span id="detail-units"></span></div>
+                    </div>
+                    <section class="detail-section" aria-labelledby="specs-title">
+                        <h4 id="specs-title">Specifications</h4>
+                        <dl class="spec-list">
+                            <div><dt>Processor</dt><dd id="detail-cpu"></dd></div>
+                            <div><dt>Memory</dt><dd id="detail-ram"></dd></div>
+                            <div><dt>Storage</dt><dd id="detail-storage"></dd></div>
+                            <div><dt>Network</dt><dd id="detail-nic"></dd></div>
+                        </dl>
+                    </section>
+                    <section class="detail-section" aria-labelledby="services-title">
+                        <h4 id="services-title">Services</h4>
+                        <ul id="detail-services" class="services-list"></ul>
+                    </section>
+                    <section class="detail-section notes-section" aria-labelledby="notes-title">
+                        <h4 id="notes-title">Notes</h4>
+                        <p id="detail-notes"></p>
+                    </section>
+                    <div class="monitoring-note"><span class="status-marker" aria-hidden="true"></span><p>Live monitoring <span id="detail-online">unavailable</span><small>Hardware and service health are not tracked here.</small></p></div>
                 </div>
-            </div>
-        </aside>
+            </section>
+        </div>
+
+        <footer class="page-footer">
+            <details class="inventory-source"><summary>About this inventory</summary><p id="inventory-note"></p></details>
+            <span>tinyDC · Independent infrastructure</span>
+        </footer>
+        <noscript><p class="empty-state">Enable JavaScript to explore the rack inventory.</p></noscript>
     </main>
-</div>
-
-<footer class="tiny-footer">
-    <a href="https://github.com/GoodrichDev/tinydc.net" target="_blank" rel="noopener noreferrer">
-        [View Source Code]
-    </a>
-</footer>
-<script src="script.js"></script>
-<!--TRACKING-->
 </body>
 </html>
