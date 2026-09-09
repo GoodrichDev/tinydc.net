@@ -5,7 +5,8 @@
     <!-- Primary Meta Tags -->
 <title>tinyDC — Mini Datacenter Rack Visualizer</title>
 <meta name="title" content="tinyDC — Mini Datacenter Rack Visualizer">
-<meta name="description" content="View the live rack layout of tinyDC, including server positions, hardware specs, and system details.">
+<meta name="description" content="Explore tinyDC's documented rack layout, server hardware, storage, and services.">
+<link rel="canonical" href="https://tinydc.net/">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
@@ -34,6 +35,7 @@
     <header class="app-header">
         <h1 id="rack-title">Server Rack</h1>
         <p class="subtitle">Click a device to view details</p>
+        <p id="inventory-note" class="subtitle"></p>
     </header>
 
     <main class="layout">
@@ -47,7 +49,7 @@
 
         <aside class="details-panel">
             <h2>Hardware Information</h2>
-            <div id="details-empty">
+            <div id="details-empty" role="status">
                 <p>Select a device in the rack to view details.</p>
             </div>
             <div id="details" class="details hidden">
@@ -61,9 +63,9 @@
                     <span id="detail-position"></span>
                 </p>
                 <p class="detail-line">
-                    <span class="label">Online:</span>
+                    <span class="label">Monitoring:</span>
                     <span id="detail-online" class="status-pill status-unknown">
-              Planned - not wired yet
+              Unavailable
             </span>
                 </p>
 
@@ -100,7 +102,7 @@
                 <p id="detail-notes"></p>
 
                 <div class="future-note">
-                    Online states and service health checks will be wired in later.
+                    This is a documented inventory. Live device and service health is unavailable.
                 </div>
             </div>
         </aside>

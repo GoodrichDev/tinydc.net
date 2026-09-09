@@ -1,5 +1,6 @@
 {
   "rackName": "tinydc.net",
+  "inventoryNote": "Updated September 8, 2026 from the July–August infrastructure documentation. Rack positions retained from the existing layout; live monitoring unavailable.",
   "totalUnits": 16,
   "devices": [
     {
@@ -8,35 +9,35 @@
       "startU": 1,
       "heightU": 2,
       "cpu": "2 x Intel Xeon X5570 @ 2.93GHz (4 cores per socket, 8 cores, 16 threads total)",
-      "ram": "70 GiB",
-      "storage": "10.5 TB virtual disk on MR9260-8i RAID controller (sda)",
+      "ram": "70.7 GiB",
+      "storage": "8.72 TiB LVM-thin capacity pool + 446.6 GiB boot virtual disk on LSI MegaRAID MR9260-8i",
       "nic": "1 x 10 Gbps, 2 x 1 Gbps",
-      "services": ["Proxmox Cluster Node", "GitHub Runner VM", "Docker VM"],
-      "notes": "Hostname: pve2"
+      "services": ["Proxmox Cluster Node", "Utility Workloads", "Capacity Storage", "Cluster Quorum"],
+      "notes": "pve2 — legacy capacity and utility node. Physical disk health behind the RAID controller is not represented here."
     },
     {
-      "id": "earthpol",
+      "id": "pve3",
       "name": "AMD Ryzen 9 5900XT Node",
       "startU": 3,
       "heightU": 4,
       "cpu": "AMD Ryzen 9 5900XT (16 cores, 32 threads, 1 socket)",
-      "ram": "62 GiB",
-      "storage": "2.7 TB HDD (sda), 447 GB SSD (sdb), 447 GB SSD (sdc), 476 GB SSD (sdd), 1.8 TB NVMe (nvme0n1)",
-      "nic": "1 x 2.5 Gbps (enp4s0)",
-      "services": ["Wings", "Minecraft Server"],
-      "notes": "Hostname: earthpol"
+      "ram": "62.7 GiB",
+      "storage": "1.76 TiB NVMe ZFS pool + 430.2 GiB mirrored SSD pool + 512 GB boot SSD",
+      "nic": "1 x 10 Gbps, 1 x 1 Gbps",
+      "services": ["Proxmox Cluster Node", "Compute Workloads", "Kubernetes Workers", "Virtual Machines"],
+      "notes": "pve3 — Ryzen high-core compute node, previously listed as earthpol. Important VMs use mirrored local storage."
     },
     {
-      "id": "ryzen5900x",
+      "id": "pve",
       "name": "AMD Ryzen 9 5900X Node",
       "startU": 7,
       "heightU": 4,
       "cpu": "AMD Ryzen 9 5900X (12 cores, 24 threads, 1 socket)",
-      "ram": "64 GiB DDR4",
-      "storage": "2 x 500 GB SSD, 1 TB NVMe, 1 TB SSD",
-      "nic": "1 x 2.5 Gbps, 1 x 10 Gbps",
-      "services": ["Proxmox / Compute Node"],
-      "notes": "General compute / expansion node"
+      "ram": "62.7 GiB",
+      "storage": "1 TB NVMe + 1 TB SSD for ZFS VM pools; 2 x 512 GB SSD boot mirror",
+      "nic": "1 x 2.5 Gbps + 1 x 10 Gbps-capable NIC (documented link: 2.5 Gbps)",
+      "services": ["Proxmox Cluster Node", "Compute Workloads", "Virtual Machines", "ZFS Replication"],
+      "notes": "pve — Ryzen performance node and replication partner for pve3."
     },
     {
       "id": "apc-ups",
@@ -76,27 +77,27 @@
     },
     {
       "id": "ucg-fiber",
-      "name": "UniFi Cloud Gateway Ultra (Fiber)",
+      "name": "UniFi Cloud Gateway Fiber",
       "startU": 14,
       "heightU": 1,
-      "cpu": "Quad-Core ARM Cortex-A53",
-      "ram": "4 GB",
-      "storage": "16 GB eMMC",
+      "cpu": "Not documented",
+      "ram": "Not documented",
+      "storage": "Not documented",
       "nic": "2 x 10G SFP+, 1 x 10G WAN/LAN, 4 x 2.5G LAN",
       "services": ["Routing", "Firewall", "VPN", "UniFi Network Controller"],
-      "notes": "Internet Speed: 5Gbps UP | 5Gbps DOWN | Throughput 10Gbps"
+      "notes": "UCGF gateway for routing, network segmentation, firewalling, and VPN. Connection speed is not monitored here."
     },
     {
       "id": "backup-nas",
-      "name": "Backup NAS",
+      "name": "Bigback Backup NAS",
       "startU": 15,
       "heightU": 2,
       "cpu": "N/A",
       "ram": "N/A",
       "storage": "32 TB raw (RAID10 usable ~16 TB) + 2 x 500 GB NVMe (RAID1)",
       "nic": "2 x 2.5 Gbps",
-      "services": ["Backups", "Storage"],
-      "notes": "RAID10 array for redundancy and performance"
+      "services": ["Proxmox Backup Storage", "NFS", "RAID10 Storage"],
+      "notes": "bigback — Ubuntu storage host. XFS on a four-disk RAID10 array backs the shared Proxmox Backup Server datastore (14.55 TiB documented capacity)."
     }
   ]
 }

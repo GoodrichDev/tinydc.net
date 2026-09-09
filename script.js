@@ -1,11 +1,39 @@
 
 async function loadRackConfig() {
-    const res = await fetch("rack-config.json");
-    if (!res.ok) {
-        console.error("Could not load rack-config.json");
+    try {
+        const res = await fetch("rack-config.json", { cache: "no-cache" });
+        if (!res.ok) throw new Error(`Inventory request failed (${res.status})`);
+        const config = await res.json();
+        validateRackConfig(config);
+        return config;
+    } catch (error) {
+        console.error("Could not load rack inventory", error);
+        document.getElementById("details-empty").textContent =
+            "Rack inventory is unavailable. Please reload the page to try again.";
         return null;
     }
-    return res.json();
+}
+
+function validateRackConfig(config) {
+    if (!config || !Number.isInteger(config.totalUnits) || config.totalUnits < 1 ||
+        config.totalUnits > 100 || !Array.isArray(config.devices)) {
+        throw new Error("Invalid rack configuration");
+    }
+    const ids = new Set();
+    const occupied = new Set();
+    for (const device of config.devices) {
+        if (!device || typeof device.id !== "string" || !device.id || ids.has(device.id) ||
+            !Number.isInteger(device.startU) || !Number.isInteger(device.heightU) ||
+            device.startU < 1 || device.heightU < 1 ||
+            device.startU + device.heightU - 1 > config.totalUnits) {
+            throw new Error("Invalid device placement");
+        }
+        ids.add(device.id);
+        for (let u = device.startU; u < device.startU + device.heightU; u++) {
+            if (occupied.has(u)) throw new Error(`Overlapping devices at U${u}`);
+            occupied.add(u);
+        }
+    }
 }
 
 function buildRack(config) {
@@ -13,6 +41,7 @@ function buildRack(config) {
     const rackTitle = document.getElementById("rack-title");
 
     rackTitle.textContent = config.rackName || "Server Rack";
+    document.getElementById("inventory-note").textContent = config.inventoryNote || "";
     rackEl.innerHTML = "";
 
     const totalUnits = config.totalUnits || 42;
@@ -64,6 +93,10 @@ function buildRack(config) {
         btn.appendChild(unitLabel);
 
         if (device) {
+            btn.type = "button";
+            btn.dataset.deviceId = device.id;
+            btn.setAttribute("aria-label", `${device.name}, U${u}`);
+            btn.setAttribute("aria-pressed", "false");
             btn.classList.add("occupied");
 
             if (device.id !== lastDeviceId) {
@@ -106,6 +139,11 @@ function buildRack(config) {
 }
 
 function showDetails(device) {
+    document.querySelectorAll(".rack-unit.occupied").forEach(button => {
+        const selected = button.dataset.deviceId === device.id;
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+    });
     const detailsEmpty = document.getElementById("details-empty");
     const details = document.getElementById("details");
 
@@ -118,7 +156,7 @@ function showDetails(device) {
         `Top U${device._topUnit}, Bottom U${device._bottomUnit}`;
 
     const statusSpan = document.getElementById("detail-online");
-    statusSpan.textContent = "Planned - not wired yet";
+    statusSpan.textContent = "Unavailable";
     statusSpan.className = "status-pill status-unknown";
 
     const cpuEl = document.getElementById("detail-cpu");
@@ -138,7 +176,7 @@ function showDetails(device) {
     if (Array.isArray(device.services) && device.services.length > 0) {
         device.services.forEach(serviceName => {
             const li = document.createElement("li");
-            li.textContent = `${serviceName} (status planned)`;
+            li.textContent = serviceName;
             servicesEl.appendChild(li);
         });
     } else {

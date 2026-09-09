@@ -99,6 +99,8 @@ body {
 }
 
 .rack-unit {
+    color: var(--text);
+    font: inherit;
     position: relative;
     display: flex;
     align-items: center;
@@ -165,6 +167,11 @@ body {
     outline-offset: -2px;
 }
 
+.rack-unit.occupied.selected {
+    background: var(--accent-soft);
+    box-shadow: inset 3px 0 var(--accent);
+}
+
 /* Text in units */
 
 .unit-label {
@@ -211,6 +218,7 @@ body {
 }
 
 .detail-line {
+    overflow-wrap: anywhere;
     display: flex;
     align-items: baseline;
     gap: 0.4rem;
